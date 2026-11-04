@@ -183,7 +183,10 @@ namespace DocksDesSuds.GameModes
                     _combo = Mathf.Min(_combo + 1, maxCombo * 3);
                     _score += pointsPerHit * Multiplier;
                     pad.Clear(new Color(0.6f, 1f, 0.7f));
-                    ShooterSfx.Play(ShooterSfx.Pop, pad.transform.position, 0.7f, 0.15f);
+                    // Pitch climbs with the multiplier: audible reward for keeping the combo.
+                    ShooterSfx.Play(ShooterSfx.Pop, pad.transform.position, 0.7f, 0.03f, 1f + 0.12f * (Multiplier - 1));
+                    if (_combo > 0 && _combo % 3 == 0 && _combo <= (maxCombo - 1) * 3) // multiplier just went up
+                        ShooterSfx.Play(ShooterSfx.Wave, Manager.Head.position, 0.35f, 0f, 1f + 0.1f * Multiplier);
                     Buzz(hand, 0.5f, 0.06f);
                 }
                 else

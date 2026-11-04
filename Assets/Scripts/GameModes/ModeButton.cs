@@ -61,7 +61,11 @@ namespace DocksDesSuds.GameModes
         }
 
         void OnSelect(SelectEnterEventArgs _) => Press();
-        void OnHoverEnter(HoverEnterEventArgs _) => _hovered = true;
+        void OnHoverEnter(HoverEnterEventArgs _)
+        {
+            if (!_hovered) ShooterSfx.Play(ShooterSfx.Tick, cap ? cap.position : transform.position, 0.5f);
+            _hovered = true;
+        }
         void OnHoverExit(HoverExitEventArgs _) => _hovered = false;
 
         public void Press()

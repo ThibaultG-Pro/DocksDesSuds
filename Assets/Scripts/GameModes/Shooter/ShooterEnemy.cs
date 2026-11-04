@@ -47,6 +47,25 @@ namespace DocksDesSuds.GameModes
             _hp = maxHp;
             _seed = Random.value * 100f;
             _mpb = new MaterialPropertyBlock();
+            StartHum();
+        }
+
+        /// <summary>Looping 3D rotor hum so drones can be heard coming from behind.</summary>
+        void StartHum()
+        {
+            var src = gameObject.AddComponent<AudioSource>();
+            src.clip = ShooterSfx.DroneHum;
+            src.loop = true;
+            src.spatialBlend = 1f;
+            src.rolloffMode = AudioRolloffMode.Logarithmic;
+            src.minDistance = 1f;
+            src.maxDistance = 20f;
+            src.dopplerLevel = 0.6f;
+            src.volume = 0.35f * Mathf.Clamp(debrisScale, 1f, 1.6f);
+            // Bigger drones hum lower; small random spread so a swarm doesn't phase.
+            src.pitch = (1f / Mathf.Max(0.5f, debrisScale)) * Random.Range(0.9f, 1.1f);
+            src.time = Random.value * 0.9f;
+            src.Play();
         }
 
         void Update()

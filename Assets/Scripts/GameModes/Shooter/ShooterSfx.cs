@@ -10,7 +10,18 @@ namespace DocksDesSuds.GameModes
     {
         const int Rate = 44100;
 
-        static AudioClip _laser, _explosion, _hit, _hurt, _wave, _button, _gameOver, _teleport, _pop, _bad;
+        static AudioClip _laser, _explosion, _hit, _hurt, _wave, _button, _gameOver, _teleport, _pop, _bad, _droneHum, _tick;
+
+        /// <summary>1 s seamless loop (integer number of cycles): buzzy rotor hum with a wobble.</summary>
+        public static AudioClip DroneHum => _droneHum ??= Make("DroneHum", 1f, (t, d) =>
+        {
+            float saw = 2f * (t * 110f % 1f) - 1f;
+            float wobble = 0.7f + 0.3f * Mathf.Sin(2 * Mathf.PI * 6f * t);
+            return (saw * 0.35f + Mathf.Sin(2 * Mathf.PI * 220f * t) * 0.25f) * wobble * 0.5f;
+        });
+
+        public static AudioClip Tick => _tick ??= Make("Tick", 0.03f, (t, d) =>
+            Mathf.Sin(2 * Mathf.PI * 2400f * t) * Env(t, d, 0.001f) * 0.3f);
 
         public static AudioClip Teleport => _teleport ??= Make("Teleport", 0.45f, (t, d) =>
             Mathf.Sin(2 * Mathf.PI * Mathf.Lerp(200f, 1200f, t / d) * t) * Env(t, d, 0.03f) * 0.35f
@@ -47,7 +58,10 @@ namespace DocksDesSuds.GameModes
             return Mathf.Sin(2 * Mathf.PI * f * t) * Env(t, d, 0.01f) * 0.35f;
         });
 
-        public static void Play(AudioClip clip, Vector3 position, float volume = 1f, float pitchJitter = 0f)
+        public static void Play(AudioClip clip, Vector3 position, float volume = 1f, float pitchJitter = 0f) =>
+            Play(clip, position, volume, pitchJitter, 1f);
+
+        public static void Play(AudioClip clip, Vector3 position, float volume, float pitchJitter, float basePitch)
         {
             if (clip == null) return;
             var go = new GameObject("SFX " + clip.name);
@@ -59,7 +73,7 @@ namespace DocksDesSuds.GameModes
             src.minDistance = 1.5f;
             src.maxDistance = 40f;
             src.rolloffMode = AudioRolloffMode.Linear;
-            src.pitch = 1f + Random.Range(-pitchJitter, pitchJitter);
+            src.pitch = basePitch + Random.Range(-pitchJitter, pitchJitter);
             src.Play();
             Object.Destroy(go, clip.length / Mathf.Max(0.1f, src.pitch) + 0.1f);
         }

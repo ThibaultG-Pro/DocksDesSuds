@@ -12,6 +12,8 @@ namespace DocksDesSuds.GameModes
     public abstract class GameModeBase : MonoBehaviour
     {
         [SerializeField] string displayName = "Mode";
+        [Tooltip("Background music played by AudioDirector while this mode runs.")]
+        [SerializeField] MusicTrack music = MusicTrack.None;
 
         [Header("Location")]
         [Tooltip("Zone enabled while the mode runs (teleport floor + invisible walls).")]
@@ -20,6 +22,7 @@ namespace DocksDesSuds.GameModes
         [SerializeField] Transform arrivalPoint;
 
         public string DisplayName => displayName;
+        public MusicTrack Music => music;
         public PlayZone Zone => zone;
         public Transform ArrivalPoint => arrivalPoint;
         public bool IsRunning { get; private set; }

@@ -39,6 +39,9 @@ namespace DocksDesSuds.GameModes
         public Transform RightHand => rightHand;
         public GameModeBase Current { get; private set; }
 
+        public event System.Action<GameModeBase> ModeStarted;
+        public event System.Action<GameModeBase> ModeEnded;
+
         InputAction _quitAction;
         float _quitHeld;
 
@@ -91,6 +94,7 @@ namespace DocksDesSuds.GameModes
             if (mode.Zone) mode.Zone.SetZoneActive(true);
             if (mode.ArrivalPoint) TeleportPlayer(mode.ArrivalPoint);
             mode.Begin(this);
+            ModeStarted?.Invoke(mode);
         }
 
         public void StopCurrent()
@@ -106,6 +110,7 @@ namespace DocksDesSuds.GameModes
             SetHandDefaultsVisible(false, true);
             if (mode.Zone) mode.Zone.SetZoneActive(false);
             if (mode.ArrivalPoint && hubSpawn) TeleportPlayer(hubSpawn);
+            ModeEnded?.Invoke(mode);
         }
 
         public void SetHandDefaultsVisible(bool left, bool visible)
