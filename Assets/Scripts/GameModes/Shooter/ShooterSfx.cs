@@ -10,7 +10,17 @@ namespace DocksDesSuds.GameModes
     {
         const int Rate = 44100;
 
-        static AudioClip _laser, _explosion, _hit, _hurt, _wave, _button, _gameOver;
+        static AudioClip _laser, _explosion, _hit, _hurt, _wave, _button, _gameOver, _teleport, _pop, _bad;
+
+        public static AudioClip Teleport => _teleport ??= Make("Teleport", 0.45f, (t, d) =>
+            Mathf.Sin(2 * Mathf.PI * Mathf.Lerp(200f, 1200f, t / d) * t) * Env(t, d, 0.03f) * 0.35f
+            + (Random.value * 2f - 1f) * Env(t, d, 0.05f) * 0.08f);
+
+        public static AudioClip Pop => _pop ??= Make("Pop", 0.12f, (t, d) =>
+            Mathf.Sin(2 * Mathf.PI * Mathf.Lerp(700f, 1500f, t / d) * t) * Env(t, d, 0.002f) * 0.5f);
+
+        public static AudioClip Bad => _bad ??= Make("Bad", 0.25f, (t, d) =>
+            Mathf.Sign(Mathf.Sin(2 * Mathf.PI * 140f * t)) * Env(t, d, 0.004f) * 0.35f);
 
         public static AudioClip Laser => _laser ??= Make("Laser", 0.14f, (t, d) =>
             Mathf.Sin(2 * Mathf.PI * Mathf.Lerp(1400f, 300f, t / d) * t) * Env(t, d, 0.004f) * 0.5f);

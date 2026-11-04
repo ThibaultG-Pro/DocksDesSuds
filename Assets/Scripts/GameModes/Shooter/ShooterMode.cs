@@ -44,7 +44,7 @@ namespace DocksDesSuds.GameModes
         const string BestScoreKey = "Shooter.BestScore";
 
         readonly List<ShooterEnemy> _alive = new();
-        ShooterGun _gun;
+        ShooterGun _gun, _leftGun;
         ShooterHUD _hud;
         int _hp, _score, _wave, _shots, _hits;
         bool _gameOver;
@@ -55,14 +55,8 @@ namespace DocksDesSuds.GameModes
             _score = _wave = _shots = _hits = 0;
             _gameOver = false;
 
-            if (Manager.RightHand && gunPrefab)
-            {
-                Manager.SetRightHandDefaultsVisible(false);
-                _gun = Instantiate(gunPrefab, Manager.RightHand);
-                _gun.transform.localPosition = gunLocalPosition;
-                _gun.transform.localRotation = Quaternion.Euler(gunLocalEuler);
-                _gun.Fired += OnFired;
-            }
+            _gun = EquipGun(Manager.RightHand, ShooterGun.Hand.Right);
+            _leftGun = EquipGun(Manager.LeftHand, ShooterGun.Hand.Left);
 
             _hud = ShooterHUD.Create(Manager.Head, hudOverlayShader);
             RefreshHud();
@@ -74,15 +68,28 @@ namespace DocksDesSuds.GameModes
             foreach (var e in _alive) if (e) e.Despawn();
             _alive.Clear();
             if (_gun) Destroy(_gun.gameObject);
+            if (_leftGun) Destroy(_leftGun.gameObject);
             if (_hud) Destroy(_hud.gameObject);
-            _gun = null;
+            _gun = _leftGun = null;
             _hud = null;
+        }
+
+        ShooterGun EquipGun(Transform hand, ShooterGun.Hand side)
+        {
+            if (!hand || !gunPrefab) return null;
+            Manager.SetHandDefaultsVisible(side == ShooterGun.Hand.Left, false);
+            var gun = Instantiate(gunPrefab, hand);
+            gun.Setup(side);
+            gun.transform.localPosition = gunLocalPosition;
+            gun.transform.localRotation = Quaternion.Euler(gunLocalEuler);
+            gun.Fired += OnFired;
+            return gun;
         }
 
         IEnumerator GameLoop()
         {
-            _hud.ShowMessage("MODE TIR", 1.5f, new Color(1f, 0.6f, 0.2f));
-            yield return new WaitForSeconds(1.5f);
+            _hud.ShowMessage("SHOT FIGHT\n<size=40%>Gâchettes pour tirer • MENU gauche maintenu pour quitter</size>", 2.5f, new Color(1f, 0.6f, 0.2f));
+            yield return new WaitForSeconds(2.5f);
             for (int i = 3; i > 0; i--)
             {
                 _hud.ShowMessage(i.ToString(), 0.8f);

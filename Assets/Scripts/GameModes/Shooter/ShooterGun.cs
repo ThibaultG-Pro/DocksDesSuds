@@ -6,10 +6,14 @@ using UnityEngine.XR.Interaction.Toolkit.Inputs.Haptics;
 namespace DocksDesSuds.GameModes
 {
     /// <summary>
-    /// Hitscan blaster parented to the right controller. Hold the trigger for automatic fire.
+    /// Hitscan blaster parented to a controller. Hold the trigger for automatic fire.
+    /// Call <see cref="Setup"/> right after instantiating to choose the hand.
     /// </summary>
     public class ShooterGun : MonoBehaviour
     {
+        public enum Hand { Left, Right }
+
+        [SerializeField] Hand hand = Hand.Right;
         [SerializeField] Transform muzzle;
         [SerializeField] LineRenderer laserSight;
         [SerializeField] LineRenderer tracer;
@@ -23,15 +27,6 @@ namespace DocksDesSuds.GameModes
         [SerializeField] int damage = 1;
         [SerializeField] LayerMask hitMask;
 
-        [Header("Input")]
-        [SerializeField] string[] fireBindings =
-        {
-            "<XRController>{RightHand}/triggerPressed",
-            "<XRController>{RightHand}/{TriggerButton}",
-            "<Mouse>/leftButton",
-            "<Keyboard>/space",
-        };
-
         public event Action<bool> Fired; // true = hit an enemy
 
         InputAction _fire;
@@ -39,22 +34,38 @@ namespace DocksDesSuds.GameModes
         float _nextFire;
         float _tracerT;
 
-        void Awake()
+        void Awake() => BuildAction();
+
+        /// <summary>Selects which controller's trigger fires this gun.</summary>
+        public void Setup(Hand h)
         {
-            _fire = new InputAction("Fire", InputActionType.Button);
-            foreach (var b in fireBindings) _fire.AddBinding(b);
+            hand = h;
+            BuildAction();
+        }
+
+        void BuildAction()
+        {
+            _fire?.Dispose();
+            string side = hand == Hand.Left ? "{LeftHand}" : "{RightHand}";
+            _fire = new InputAction("Fire " + hand, InputActionType.Button);
+            _fire.AddBinding($"<XRController>{side}/triggerPressed");
+            _fire.AddBinding($"<XRController>{side}/{{TriggerButton}}");
+            // Editor / desktop testing
+            if (hand == Hand.Right) { _fire.AddBinding("<Mouse>/leftButton"); _fire.AddBinding("<Keyboard>/space"); }
+            else _fire.AddBinding("<Mouse>/rightButton");
+            if (isActiveAndEnabled) _fire.Enable();
         }
 
         void OnEnable()
         {
-            _fire.Enable();
+            _fire?.Enable();
             _haptics = GetComponentInParent<HapticImpulsePlayer>();
             if (tracer) tracer.enabled = false;
             if (muzzleLight) muzzleLight.intensity = 0f;
         }
 
-        void OnDisable() => _fire.Disable();
-        void OnDestroy() => _fire.Dispose();
+        void OnDisable() => _fire?.Disable();
+        void OnDestroy() => _fire?.Dispose();
 
         void Update()
         {

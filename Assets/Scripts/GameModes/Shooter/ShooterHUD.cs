@@ -59,6 +59,8 @@ namespace DocksDesSuds.GameModes
             _status.text = $"PV {hearts}    SCORE <b>{score}</b>    VAGUE {wave}";
         }
 
+        public void SetStatusText(string text) => _status.text = text;
+
         public void ShowMessage(string text, float seconds, Color? color = null)
         {
             _message.text = text;
