@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 600" width="1500" height="600">
+  <defs>
+    <linearGradient id="bgw" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#12032B"/>
+      <stop offset="1" stop-color="#2B0A55"/>
+    </linearGradient>
+    <linearGradient id="chromeW" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.45" stop-color="#9EF3FF"/>
+      <stop offset="0.5" stop-color="#2E7BFF"/>
+      <stop offset="1" stop-color="#B57CFF"/>
+    </linearGradient>
+    <linearGradient id="hot" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FFE45C"/>
+      <stop offset="1" stop-color="#FF2E88"/>
+    </linearGradient>
+    <filter id="glowW" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1500" height="600" rx="60" fill="url(#bgw)"/>
+  <g stroke="#FF2E88" stroke-width="3" opacity="0.35">
+    <path d="M0 470 H1500"/><path d="M0 510 H1500"/><path d="M0 565 H1500"/>
+  </g>
+  <image href="logo_icon.svg" x="60" y="70" width="460" height="460"/>
+  <g transform="skewX(-10)" font-family="Arial Black, Segoe UI Black, Impact, sans-serif" font-weight="900">
+    <text x="640" y="270" font-size="150" fill="#FF2E88" opacity="0.85" letter-spacing="6">DOCKS</text>
+    <text x="632" y="262" font-size="150" fill="url(#chromeW)" stroke="#12032B" stroke-width="8" paint-order="stroke" letter-spacing="6">DOCKS</text>
+    <text x="680" y="400" font-size="110" fill="url(#hot)" stroke="#12032B" stroke-width="7" paint-order="stroke" letter-spacing="8" filter="url(#glowW)">DES SUDS</text>
+  </g>
+  <g transform="translate(640 432)">
+    <rect width="300" height="62" rx="31" fill="none" stroke="#3CF0FF" stroke-width="5" filter="url(#glowW)"/>
+    <text x="150" y="44" text-anchor="middle" font-family="Arial Black, Segoe UI Black, sans-serif" font-weight="900" font-size="36" fill="#3CF0FF" letter-spacing="8">VR ARCADE</text>
+  </g>
+</svg>
